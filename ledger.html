@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0f172a">
-<title>النظام المالي الشخصي - سجل المعاملات</title>
+<title>سجل المعاملات والتقارير التفصيلية</title>
 <style>
 :root{--bg:#f8fafc;--card:#ffffff;--ink:#0f172a;--muted:#64748b;--line:#e2e8f0;--green:#059669;--blue:#2563eb;--red:#be123c;--warn:#b45309}
 *{box-sizing:border-box}
@@ -14,13 +14,12 @@ button,input,select{font:inherit}
 button{cursor:pointer;touch-action:manipulation}
 .app{width:100%;max-width:540px;background:var(--card);border:1px solid #dbe3ee;border-radius:22px;box-shadow:0 12px 35px #0f172a12;display:flex;flex-direction:column}
 .header{background:#0f172a;color:white;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;font-size:14px;font-weight:800;gap:8px;border-top-left-radius:21px;border-top-right-radius:21px}
-.pill{font-size:10px;background:#1e293b;color:#cbd5e1;padding:5px 8px;border-radius:8px;white-space:nowrap}
 .content{padding:14px;flex:1}
 .stack{display:flex;flex-direction:column;gap:12px}
 label{display:block;color:#475569;font-size:12px;font-weight:700;margin-bottom:5px}
 input,select{width:100%;padding:11px 10px;border:1px solid var(--line);border-radius:12px;background:#f8fafc;color:var(--ink);outline:none;font-size:13px}
 .grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
-.btn{border:0;border-radius:14px;padding:12px 10px;font-weight:800;font-size:13px;transition:all .2s ease;text-align:center;text-decoration:none;display:inline-block;cursor:pointer}
+.btn{border:0;border-radius:14px;padding:12px 10px;font-weight:800;font-size:13px;transition:all .2s ease;text-align:center;text-decoration:none;display:inline-block}
 .btn-primary{background:linear-gradient(135deg,#059669,#047857);color:white}
 .btn-soft{background:#ecfdf5;color:#047857;border:1px solid #a7f3d0}
 .btn-green{background:#059669;color:white}
@@ -42,35 +41,34 @@ th,td{padding:8px 6px;border-bottom:1px solid #eef2f7;border-left:1px solid #f1f
 th{background:#f1f5f9;color:#334155;font-weight:800}
 .amount{font-variant-numeric:tabular-nums;font-weight:700}
 .action-btn-mini{padding:4px 6px!important;font-size:10px!important;border-radius:8px!important;border:0!important;margin:1px!important}
-.nav-bottom{position:fixed;bottom:10px;left:50%;transform:translateX(-50%);width:calc(100% - 16px);max-width:540px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;padding:8px;border:1px solid #334155;background:#0f172a;border-radius:20px;box-shadow:0 12px 30px rgba(0,0,0,0.4);z-index:30}
+.nav-bottom{position:fixed;bottom:10px;left:50%;transform:translateX(-50%);width:calc(100% - 16px);max-width:540px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding:8px;background:#0f172a;border-radius:20px;box-shadow:0 12px 30px rgba(0,0,0,0.4);z-index:30}
 .nav-bottom .nav-btn{background:transparent;border:0;color:#94a3b8;padding:8px 2px;font-size:10.5px;font-weight:800;display:flex;flex-direction:column;align-items:center;gap:3px;border-radius:12px;text-decoration:none}
 .nav-bottom .nav-btn.active{background:#1e293b;color:#34d399}
-#toast{position:fixed;bottom:85px;left:50%;transform:translateX(-50%);z-index:200;background:#0f172a;color:white;padding:11px 16px;border-radius:14px;font-size:12px;font-weight:700;display:none;border:1px solid #334155}
+#toast{position:fixed;bottom:85px;left:50%;transform:translateX(-50%);z-index:200;background:#0f172a;color:white;padding:11px 16px;border-radius:14px;font-size:12px;display:none}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
 <body>
 <div class="app">
-<header class="header"><span>سجل المعاملات وكشوف الحساب 📜</span><span class="pill">الكويت · د.ك</span></header>
+<header class="header"><span>سجل المعاملات والتقارير 📜</span><a href="index.html" class="btn btn-soft" style="padding:4px 10px;font-size:11px">الرئيسية 🏠</a></header>
 <main class="content stack">
 
-  <!-- قسم التصفية والبحث -->
+  <!-- قسم الفلترة -->
   <div id="filter-section" class="panel stack">
-    <div style="font-size:13px;font-weight:800;color:#0f172a">🔍 معايير التصفية والبحث</div>
-    
+    <div style="font-size:13px;font-weight:800;color:#0f172a">🔍 معايير التصفية والتقرير</div>
     <div>
       <label>التصنيف الرئيسي</label>
       <select id="report-type" onchange="onReportTypeChange()">
-        <option value="all">كل المعاملات (شامل)</option>
-        <option value="expense">مصروفات فقط</option>
-        <option value="income">دخل وواردات فقط</option>
+        <option value="expense">مصروفات</option>
+        <option value="income">دخل</option>
         <option value="debt">ديون وعلاقات مالية</option>
         <option value="transfer">تحويلات مالية خارجية</option>
         <option value="internal_transfer">تحويلات بين الحسابات</option>
+        <option value="all">ملخص كل المعاملات</option>
       </select>
     </div>
 
-    <div id="report-subtype-wrap" class="hidden">
+    <div id="report-subtype-wrap">
       <label>النوع الفرعي</label>
       <select id="report-subtype"></select>
     </div>
@@ -94,41 +92,35 @@ th{background:#f1f5f9;color:#334155;font-weight:800}
       </div>
     </div>
 
-    <button type="button" onclick="generateReport()" class="btn btn-dark">عرض الكشف 📄</button>
+    <button type="button" onclick="setSalaryCycleDates()" class="btn btn-soft">📅 تعبئة تاريخ آخر دورة راتب</button>
+    <button type="button" onclick="generateReport()" class="btn btn-dark">إنشاء التقرير 📄</button>
   </div>
 
-  <!-- قسم عرض التقرير والسجل -->
+  <!-- قسم عرض التقرير -->
   <div id="report-section" class="stack hidden">
     <div class="row-between">
-      <button type="button" onclick="backToFilters()" class="btn btn-soft" style="padding:6px 12px;font-size:11px">⬅️ تعديل الفلتر</button>
+      <button type="button" onclick="backToFilters()" class="btn btn-soft" style="padding:6px 12px;font-size:11px">⬅️ تعديل معايير التقرير</button>
       <button type="button" onclick="exportReportExcel()" class="btn btn-green" style="padding:6px 12px;font-size:11px">تصدير Excel 📗</button>
     </div>
 
     <div>
-      <input id="report-search" placeholder="🔍 بحث سريع في النتائج..." oninput="filterReportTable()">
+      <label>🔍 بحث داخل التقرير</label>
+      <input id="report-search" placeholder="اكتب للبحث..." oninput="filterReportTable()">
     </div>
 
     <div class="report">
       <div class="report-head">
-        <h2>كشف الحساب المالي التفصيلي</h2>
+        <h2 id="report-title">كشف حساب مالي</h2>
       </div>
       
       <div class="report-meta">
-        <div class="row-between"><span>الفترة المحددة:</span><strong id="display-date-range">—</strong></div>
-        <div class="row-between"><span>إجمالي الحركات:</span><strong id="display-count">0</strong></div>
+        <div class="row-between"><span>الفترة:</span><strong id="display-date-range">—</strong></div>
+        <div class="row-between"><span>عدد الحركات:</span><strong id="display-count">0</strong></div>
       </div>
 
       <div class="table-wrap">
         <table>
-          <thead id="report-table-head">
-            <tr>
-              <th>التاريخ</th>
-              <th>التفاصيل</th>
-              <th>الطرف/المحفظة</th>
-              <th>المبلغ</th>
-              <th>إجراءات</th>
-            </tr>
-          </thead>
+          <thead id="report-table-head"></thead>
           <tbody id="report-table-body"></tbody>
         </table>
       </div>
@@ -143,7 +135,6 @@ th{background:#f1f5f9;color:#334155;font-weight:800}
   <a href="index.html" class="nav-btn"><span>🏠</span><span>الرئيسية</span></a>
   <a href="ledger.html" class="nav-btn active"><span>📜</span><span>السجل</span></a>
   <a href="analytics.html" class="nav-btn"><span>📊</span><span>التحليل</span></a>
-  <a href="settings.html" class="nav-btn"><span>⚙️</span><span>الإعدادات</span></a>
 </nav>
 </div>
 
@@ -163,12 +154,6 @@ function initDates(){
   writeDateParts("date-to", today);
 }
 
-function readDateParts(prefix){
-  const d = $(prefix+"-day")?.value, m = $(prefix+"-month")?.value, y = $(prefix+"-year")?.value;
-  if(!d || !m || !y) return "";
-  return formatStrictISO(y, m, d);
-}
-
 function writeDateParts(prefix, isoStr){
   if(!isoStr) return;
   const p = isoStr.split("-");
@@ -178,19 +163,39 @@ function writeDateParts(prefix, isoStr){
   $(prefix+"-year") && ($(prefix+"-year").value = Number(p[0]));
 }
 
+function readDateParts(prefix){
+  const d = $(prefix+"-day")?.value, m = $(prefix+"-month")?.value, y = $(prefix+"-year")?.value;
+  if(!d || !m || !y) return "";
+  return formatStrictISO(y, m, d);
+}
+
 function onReportTypeChange(){
   const type = $("report-type").value;
   const subWrap = $("report-subtype-wrap");
   const subSel = $("report-subtype");
+  subWrap.classList.remove("hidden");
   
   if(type === "expense"){
-    subWrap.classList.remove("hidden");
-    subSel.innerHTML = '<option value="all">كل تصنيفات المصروفات</option>' + getExpenseCategories().map(c => `<option value="${escapeHTMLString(c)}">${escapeHTMLString(c)}</option>`).join("");
+    subSel.innerHTML = '<option value="all">كل التصنيفات</option>' + getExpenseCategories().map(c => `<option value="${escapeHTMLString(c)}">${escapeHTMLString(c)}</option>`).join("");
   } else if(type === "income"){
-    subWrap.classList.remove("hidden");
-    subSel.innerHTML = '<option value="all">كل مصادر الدخل</option>' + getIncomeCategories().map(c => `<option value="${escapeHTMLString(c)}">${escapeHTMLString(c)}</option>`).join("");
+    subSel.innerHTML = '<option value="all">كل المصادر</option>' + getIncomeCategories().map(c => `<option value="${escapeHTMLString(c)}">${escapeHTMLString(c)}</option>`).join("");
+  } else if(type === "debt"){
+    subSel.innerHTML = '<option value="all">كل الحركات</option><option value="creditor">أخدنا منه</option><option value="debtor">أدّينا له (سداد)</option><option value="opening_balance">رصيد أول المدة</option>';
   } else {
     subWrap.classList.add("hidden");
+  }
+}
+
+async function setSalaryCycleDates(){
+  const txs = await getAllTransactions();
+  const cycles = getAllSalaryCycles(txs);
+  if(cycles.length > 0){
+    const lastCycle = cycles[cycles.length - 1];
+    writeDateParts("date-from", lastCycle.start);
+    writeDateParts("date-to", lastCycle.end);
+    showToastMessage("تم تحديد فترة آخر دورة راتب 📅");
+  } else {
+    showToastMessage("لم يتم تسجيل راتب أساسي بعد");
   }
 }
 
@@ -205,30 +210,45 @@ async function generateReport(){
     if(type !== "all" && t.type !== type) return false;
     if(type === "expense" && subType !== "all" && t.category !== subType) return false;
     if(type === "income" && subType !== "all" && t.category !== subType) return false;
+    if(type === "debt" && subType !== "all" && t.debtType !== subType) return false;
     if(start && t.date < start) return false;
     if(end && t.date > end) return false;
     return true;
   });
 
   cachedReportRecords = filtered;
-  visibleReportRecords = filtered;
+  visibleReportRecords = filtered.slice();
 
   $("filter-section").classList.add("hidden");
   $("report-section").classList.remove("hidden");
   $("display-date-range").textContent = (start ? formatDateDisplay(start) : "البداية") + " إلى " + (end ? formatDateDisplay(end) : "النهاية");
-  
-  renderReportTable(filtered);
+  $("display-count").textContent = filtered.length + " حركة";
+  $("report-title").textContent = "كشف حساب مالي مفصل";
+
+  renderReportTableRows(filtered);
+  updateReportSummaries(filtered);
 }
 
-function renderReportTable(records){
-  $("display-count").textContent = records.length + " حركة";
+function renderReportTableRows(records){
   const tbody = $("report-table-body");
-  
+  const thead = $("report-table-head");
+  thead.innerHTML = `<tr><th>التاريخ</th><th>التفاصيل</th><th>الطرف / المحفظة</th><th class="amount">المبلغ</th><th class="amount">الرصيد</th><th class="no-print">إجراء</th></tr>`;
+
+  let runningBal = 0;
+  const sorted = [...records].sort((a, b) => a.date.localeCompare(b.date));
+  const balances = {};
+  sorted.forEach(t => {
+    if(t.type === "internal_transfer") return;
+    if(t.type === "income" || isCreditor(t)) runningBal += getRealAmount(t);
+    else if(t.type === "expense" || t.type === "transfer" || isDebtor(t)) runningBal -= getRealAmount(t);
+    balances[t.id] = runningBal;
+  });
+
   tbody.innerHTML = records.map(t => {
     const acc = getAccountById(t.account);
-    const accName = acc ? acc.name : "كاش";
     const details = t.category || t.notes || t.type;
-    const person = t.person || (t.beneficiaries||[]).map(b=>b.name).join(", ") || accName;
+    const person = t.person || (t.beneficiaries||[]).map(b=>b.name).join(", ") || acc.name;
+    const bal = balances[t.id] || 0;
 
     return `
       <tr>
@@ -236,33 +256,42 @@ function renderReportTable(records){
         <td><strong>${escapeHTMLString(details)}</strong></td>
         <td>${escapeHTMLString(person)}</td>
         <td class="amount">${formatMoney(getRealAmount(t))}</td>
-        <td style="white-space:nowrap">
-          <button class="btn btn-danger action-btn-mini" onclick="handleDeleteTx('${t.id}')">حذف</button>
+        <td class="amount"><strong>${formatMoney(bal)}</strong></td>
+        <td class="no-print">
+          <button class="btn btn-danger action-btn-mini" onclick="deleteTx('${t.id}')">حذف</button>
         </td>
       </tr>
     `;
-  }).join("") || '<tr><td colspan="5" style="text-align:center">لا توجد حركات مطابقة للفلتر</td></tr>';
+  }).join("") || '<tr><td colspan="6" style="text-align:center">لا توجد حركات مطابقة</td></tr>';
+}
 
-  const sum = records.reduce((s, t) => s + getRealAmount(t), 0);
-  $("report-summary").innerHTML = `<div class="row-between"><span>إجمالي المبالغ المصفاة:</span><strong>${formatMoney(sum)}</strong></div>`;
+function updateReportSummaries(records){
+  const totalIn = records.reduce((s, t) => t.type === "income" || isCreditor(t) ? s + getRealAmount(t) : s, 0);
+  const totalOut = records.reduce((s, t) => t.type === "expense" || t.type === "transfer" || isDebtor(t) ? s + getRealAmount(t) : s, 0);
+  const net = totalIn - totalOut;
+
+  $("report-summary").innerHTML = `
+    <div class="row-between"><span>إجمالي الواردات:</span><strong class="good">${formatMoney(totalIn)}</strong></div>
+    <div class="row-between"><span>إجمالي المصروفات:</span><strong class="bad">${formatMoney(totalOut)}</strong></div>
+    <div class="row-between" style="border-top:1px dashed #a7f3d0;padding-top:4px"><span>الصافي:</span><strong class="${net>=0?"good":"bad"}">${formatMoney(net)}</strong></div>
+  `;
 }
 
 function filterReportTable(){
-  const query = $("report-search").value.trim().toLowerCase();
-  if(!query){
+  const q = $("report-search").value.toLowerCase().trim();
+  if(!q) {
     visibleReportRecords = cachedReportRecords;
   } else {
     visibleReportRecords = cachedReportRecords.filter(t => {
-      const details = (t.category || t.notes || t.type || "").toLowerCase();
-      const person = (t.person || "").toLowerCase();
-      return details.includes(query) || person.includes(query);
+      const text = `${t.category || ""} ${t.notes || ""} ${t.person || ""}`.toLowerCase();
+      return text.includes(q);
     });
   }
-  renderReportTable(visibleReportRecords);
+  renderReportTableRows(visibleReportRecords);
 }
 
-async function handleDeleteTx(id){
-  if(!confirm("⚠️ هل أنت متأكد من حذف هذه المعاملة؟")) return;
+async function deleteTx(id){
+  if(!confirm("هل أنت متأكد من حذف هذه المعاملة؟")) return;
   await deleteTransactionRecord(id);
   showToastMessage("تم حذف المعاملة ✅");
   await generateReport();
@@ -275,20 +304,17 @@ function backToFilters(){
 
 function exportReportExcel(){
   if(!visibleReportRecords.length) return void showToastMessage("لا توجد بيانات للتصدير");
-  
   const data = visibleReportRecords.map(t => ({
     "التاريخ": formatDateDisplay(t.date),
-    "الوقت": t.time || "",
     "النوع": t.type,
-    "التصنيف/التفاصيل": t.category || t.notes || "",
-    "الطرف/المستفيد": t.person || (t.beneficiaries||[]).map(b=>b.name).join(", ") || "",
-    "المبلغ (د.ك)": getRealAmount(t)
+    "التفاصيل": t.category || t.notes || "",
+    "الطرف": t.person || "",
+    "المبلغ": getRealAmount(t)
   }));
-
   const ws = XLSX.utils.json_to_sheet(data);
   const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "كشف_الحساب");
-  XLSX.writeFile(wb, `كشف_حساب_${todayISO()}.xlsx`);
+  XLSX.utils.book_append_sheet(wb, ws, "Ledger");
+  XLSX.writeFile(wb, `سجل_المعاملات_${todayISO()}.xlsx`);
   showToastMessage("تم تصدير ملف Excel بنجاح 📗");
 }
 
