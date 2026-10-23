@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f172a">
+<title>النظام المالي الشخصي - الإعدادات والنسخ الاحتياطي</title>
+<style>
+:root{--bg:#f8fafc;--card:#ffffff;--ink:#0f172a;--muted:#64748b;--line:#e2e8f0;--green:#059669;--blue:#2563eb;--red:#be123c;--warn:#b45309}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;min-height:100%;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);overflow-x:hidden}
+body{padding:8px;padding-bottom:calc(85px + env(safe-area-inset-bottom,12px));display:flex;justify-content:center;align-items:flex-start}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer;touch-action:manipulation}
+.app{width:100%;max-width:480px;background:var(--card);border:1px solid #dbe3ee;border-radius:22px;box-shadow:0 12px 35px #0f172a12;display:flex;flex-direction:column}
+.header{background:#0f172a;color:white;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;font-size:14px;font-weight:800;gap:8px;border-top-left-radius:21px;border-top-right-radius:21px}
+.pill{font-size:10px;background:#1e293b;color:#cbd5e1;padding:5px 8px;border-radius:8px;white-space:nowrap}
+.content{padding:14px;flex:1}
+.stack{display:flex;flex-direction:column;gap:12px}
+label{display:block;color:#475569;font-size:12px;font-weight:700;margin-bottom:5px}
+input,select{width:100%;padding:11px 10px;border:1px solid var(--line);border-radius:12px;background:#f8fafc;color:var(--ink);outline:none;font-size:14px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.btn{border:0;border-radius:14px;padding:12px 10px;font-weight:800;font-size:13px;transition:all .2s ease;text-align:center;text-decoration:none;display:inline-block;cursor:pointer}
+.btn-primary{background:linear-gradient(135deg,#059669,#047857);color:white}
+.btn-soft{background:#ecfdf5;color:#047857;border:1px solid #a7f3d0}
+.btn-green{background:#059669;color:white}
+.btn-muted{background:#f1f5f9;color:#334155}
+.btn-danger{background:#fff1f2;color:#be123c;border:1px solid #fecdd3}
+.row-between{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.nav-bottom{position:fixed;bottom:10px;left:50%;transform:translateX(-50%);width:calc(100% - 16px);max-width:480px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;padding:8px;border:1px solid #334155;background:#0f172a;border-radius:20px;box-shadow:0 12px 30px rgba(0,0,0,0.4);z-index:30}
+.nav-bottom .nav-btn{background:transparent;border:0;color:#94a3b8;padding:8px 2px;font-size:10.5px;font-weight:800;display:flex;flex-direction:column;align-items:center;gap:3px;border-radius:12px;text-decoration:none}
+.nav-bottom .nav-btn.active{background:#1e293b;color:#34d399;box-shadow:0 4px 12px rgba(0,0,0,0.2)}
+.small{font-size:11px;color:var(--muted)}
+.panel{background:#ffffff;border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:0 2px 8px rgba(15,23,42,0.03)}
+.person-picker{display:grid;grid-template-columns:1fr auto;gap:6px;align-items:stretch}
+.btn-plus{padding:0 14px;font-size:18px;font-weight:800;min-width:44px}
+.persons-manage-list{display:flex;flex-direction:column;gap:6px;max-height:200px;overflow-y:auto}
+.person-item{display:flex;justify-content:space-between;align-items:center;background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:12px}
+.acc-item{border:1px solid var(--line);border-radius:16px;background:#fff;overflow:hidden;margin-bottom:8px}
+.acc-header{padding:12px 14px;background:#f8fafc;display:flex;justify-content:space-between;align-items:center;cursor:pointer;font-weight:800;font-size:13px;color:#0f172a}
+.acc-body{padding:14px;border-top:1px solid var(--line);background:#ffffff}
+#toast{position:fixed;bottom:85px;left:50%;transform:translateX(-50%);z-index:200;background:#0f172a;color:white;padding:11px 16px;border-radius:14px;font-size:12px;font-weight:700;display:none;border:1px solid #334155}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="header"><span>الإعدادات والنسخ الاحتياطي ⚙️</span><span class="pill">الكويت · د.ك</span></header>
+<main class="content stack">
+
+  <!-- سقف الأمان -->
+  <div class="acc-item">
+    <div class="acc-header"><span>🛡️ سقف الأمان اليومي</span></div>
+    <div class="acc-body stack">
+      <div class="person-picker">
+        <input id="safety-cap-input" type="number" placeholder="مثال: 150 د.ك">
+        <button type="button" class="btn btn-primary" onclick="handleSaveCap()">حفظ</button>
+      </div>
+      <div class="small">سقف المصروفات اليومية العادية للتنبيه عند التجاوز.</div>
+    </div>
+  </div>
+
+  <!-- النسخ الاحتياطي والاستعادة -->
+  <div class="acc-item">
+    <div class="acc-header"><span>💾 النسخ الاحتياطي الشامل والاستعادة</span></div>
+    <div class="acc-body stack">
+      <div class="grid2">
+        <button class="btn btn-primary" type="button" onclick="handleDownloadBackup()">تنزيل JSON 📥</button>
+        <button class="btn btn-green" type="button" onclick="handleShareBackup()">مشاركة 📤</button>
+      </div>
+      
+      <div style="border-top:1px dashed #e2e8f0;padding-top:10px" class="stack">
+        <label style="font-size:11px">استعادة نسخة احتياطية من ملف:</label>
+        <input type="file" id="restore-file-input" accept=".json,application/json">
+        <button class="btn btn-muted" type="button" onclick="handleRestoreBackup()">رفع واستعادة البيانات 🔄</button>
+      </div>
+
+      <div style="border-top:1px dashed #e2e8f0;padding-top:10px" class="stack">
+        <button class="btn btn-danger" type="button" onclick="handleClearAll()">حذف كل البيانات نهائيًا ⚠️</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- إدارة الحسابات والمحافظ -->
+  <div class="acc-item">
+    <div class="acc-header"><span>🏦 إدارة الحسابات والمحافظ</span></div>
+    <div class="acc-body stack">
+      <div class="person-picker">
+        <input id="new-acc-name" placeholder="اسم حساب جديد...">
+        <button type="button" class="btn btn-primary btn-plus" onclick="handleAddAccount()">+</button>
+      </div>
+      <div id="accounts-list" class="persons-manage-list"></div>
+    </div>
+  </div>
+
+  <!-- إدارة تصنيفات المصروفات -->
+  <div class="acc-item">
+    <div class="acc-header"><span>🏷️ تصنيفات المصروفات</span></div>
+    <div class="acc-body stack">
+      <div class="person-picker">
+        <input id="new-cat-name" placeholder="تصنيف جديد...">
+        <button type="button" class="btn btn-primary btn-plus" onclick="handleAddCategory()">+</button>
+      </div>
+      <div id="categories-list" class="persons-manage-list"></div>
+    </div>
+  </div>
+
+  <!-- قائمة الأسماء والجهات -->
+  <div class="acc-item">
+    <div class="acc-header"><span>👥 الأسماء والجهات</span></div>
+    <div class="acc-body stack">
+      <div class="person-picker">
+        <input id="new-person-name" placeholder="اسم جديد...">
+        <button type="button" class="btn btn-primary btn-plus" onclick="handleAddPerson()">+</button>
+      </div>
+      <div id="people-list" class="persons-manage-list"></div>
+    </div>
+  </div>
+
+</main>
+
+<nav class="nav-bottom">
+  <a href="index.html" class="nav-btn"><span>🏠</span><span>الرئيسية</span></a>
+  <a href="ledger.html" class="nav-btn"><span>📜</span><span>السجل</span></a>
+  <a href="analytics.html" class="nav-btn"><span>📊</span><span>التحليل</span></a>
+  <a href="settings.html" class="nav-btn active"><span>⚙️</span><span>الإعدادات</span></a>
+</nav>
+</div>
+
+<div id="toast"></div>
+
+<script src="app.js"></script>
+<script>
+// @ts-nocheck
+function $(id){ return document.getElementById(id); }
+
+function loadSettingsUI(){
+  $("safety-cap-input").value = getSafetyCap();
+  
+  // عرض القوائم
+  $("accounts-list").innerHTML = getAccountsList().filter(a => !a.hidden).map(a => `
+    <div class="person-item"><span>${a.icon||"💳"} ${escapeHTMLString(a.name)}</span></div>
+  `).join("");
+
+  $("categories-list").innerHTML = getExpenseCategories().map(c => `
+    <div class="person-item"><span>${escapeHTMLString(c)}</span></div>
+  `).join("");
+
+  $("people-list").innerHTML = getPeopleList().map(p => `
+    <div class="person-item"><span>${escapeHTMLString(p)}</span></div>
+  `).join("");
+}
+
+function handleSaveCap(){
+  const val = $("safety-cap-input").value;
+  saveSafetyCapValue(val);
+  showToastMessage("تم حفظ سقف الأمان اليومي ✅");
+}
+
+function handleAddAccount(){
+  const val = $("new-acc-name").value.trim();
+  if(!val) return;
+  const list = getAccountsList();
+  list.push({ id: `acc_${Date.now()}`, name: val, type: "bank", icon: "💳" });
+  saveAccountsList(list);
+  $("new-acc-name").value = "";
+  loadSettingsUI();
+  showToastMessage("تمت إضافة الحساب بنجاح ✅");
+}
+
+function handleAddCategory(){
+  const val = $("new-cat-name").value.trim();
+  if(!val) return;
+  const list = getExpenseCategories();
+  list.push(val);
+  saveExpenseCategories(list);
+  $("new-cat-name").value = "";
+  loadSettingsUI();
+  showToastMessage("تمت إضافة التصنيف بنجاح ✅");
+}
+
+function handleAddPerson(){
+  const val = $("new-person-name").value.trim();
+  if(!val) return;
+  const list = getPeopleList();
+  list.push(val);
+  savePeopleList(list);
+  $("new-person-name").value = "";
+  loadSettingsUI();
+  showToastMessage("تمت إضافة الاسم بنجاح ✅");
+}
+
+/* دوال النسخ الاحتياطي والاستعادة الذكية عبر app.js */
+
+async function handleDownloadBackup(){
+  try {
+    const data = await buildFullBackupData();
+    const str = JSON.stringify(data, null, 2);
+    const blob = new Blob([str], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `نسخة_مالية_شاملة_${todayISO()}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    showToastMessage("تم تنزيل النسخة الاحتياطية بنجاح 📥");
+  } catch(e) {
+    console.error(e);
+    showToastMessage("فشل تنزيل النسخة الاحتياطية");
+  }
+}
+
+async function handleShareBackup(){
+  try {
+    const data = await buildFullBackupData();
+    const str = JSON.stringify(data, null, 2);
+    if(navigator.share){
+      const file = new File([str], `backup_${todayISO()}.json`, { type: "application/json" });
+      await navigator.share({ title: "نسخة مالية احتياطية", files: [file] });
+    } else if(navigator.clipboard){
+      await navigator.clipboard.writeText(str);
+      showToastMessage("تم نسخ بيانات الملف للحافظة 📋");
+    }
+  } catch(e) {
+    showToastMessage("تعذرت المشاركة");
+  }
+}
+
+async function handleRestoreBackup(){
+  const fileInput = $("restore-file-input");
+  if(!fileInput || !fileInput.files || !fileInput.files.length){
+    return void showToastMessage("الرجاء اختيار ملف JSON أولاً");
+  }
+
+  if(!confirm("⚠️ تحذير: سيتم استبدال كل المعاملات والإعدادات الحالية بالبيانات الموجودة في الملف. هل أنت متأكد؟")){
+    return;
+  }
+
+  const file = fileInput.files[0];
+  const reader = new FileReader();
+
+  reader.onload = async (e) => {
+    try {
+      const parsed = JSON.parse(e.target.result);
+      await restoreFullBackupData(parsed);
+      showToastMessage("تمت استعادة النسخة الاحتياطية بنجاح ✅");
+      loadSettingsUI();
+      fileInput.value = "";
+    } catch(err) {
+      console.error(err);
+      showToastMessage("فشلت الاستعادة: ملف غير صالح أو تالف");
+    }
+  };
+
+  reader.readAsText(file);
+}
+
+async function handleClearAll(){
+  if(!confirm("⚠️ تحذير شديد: سيتم مسح كافة البيانات والمعاملات نهائياً. متابعة؟")) return;
+  await clearAllTransactionsStore();
+  showToastMessage("تم مسح كافة المعاملات بنجاح");
+  loadSettingsUI();
+}
+
+window.addEventListener("DOMContentLoaded", async () => {
+  await openDB();
+  loadSettingsUI();
+});
+</script>
+</body>
+</html>
